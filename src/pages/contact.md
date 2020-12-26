@@ -1,8 +1,11 @@
 ---
-title: 'Contact'
+title: 'Laboratorio e Vendita'
 permalink: '/contact/index.html'
 layout: 'layouts/contact.njk'
 ---
+
+[Vieni a trovarci!](https://goo.gl/maps/qn77CNgQ6coY45vw7)
+
 
 You can have a contact page which uses a basic form. The [code with the form fields lives here](https://github.com/hankchizljaw/hylia/blob/master/src/_includes/layouts/contact.njk). 
 
