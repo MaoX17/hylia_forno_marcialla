@@ -1,208 +1,199 @@
-# A simple starter kit for Eleventy
+# eleventy-webpack :balloon:
 
-Hylia is a lightweight [Eleventy](https://11ty.io) starter kit with [Netlify CMS](https://www.netlifycms.org/) pre-configured, so that you can one-click install a progressive, accessible blog in minutes. It also gives you a well organised starting point to extend it for yourself.
+A barebone [eleventy](https://www.11ty.dev/) and [webpack](https://webpack.js.org/) template. Fork and go.
 
-Get started now by **[deploying Hylia to Netlify.][deploy-to-netlify]**
+[![Netlify Status](https://api.netlify.com/api/v1/badges/c952af3b-547a-40a6-a999-a7966a846b2c/deploy-status)](https://app.netlify.com/sites/eleventy-webpack/deploys)
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)][deploy-to-netlify]
-
-<img src="https://hankchizljaw.imgix.net/hylia-github.jpg?auto=format&q=60" width="550" />
+[![](https://user-images.githubusercontent.com/447956/82975961-e47f6680-9fab-11ea-9c5c-cdfb6ef2932c.png)](https://eleventy-webpack.netlify.app)
 
 ## Features
 
-Hylia version 0.7.0 features:
+- :fire: Barebone [11ty](https://www.11ty.dev/) (literally :scream:)
+- :zap: Fast build with per env configs ([babel-env](https://babeljs.io/docs/en/babel-preset-env), [postcss-preset-env](https://github.com/csstools/postcss-preset-env), [webpack](https://webpack.js.org/configuration/#use-different-configuration-file)...)
+- `.js` (ES6, Babel, Polyfills)
+- `.css` (Sass, PostCSS, Autoprefixer)
+- :white_check_mark: Optimized for production (source maps, headers, minified code...)
+- :camera_flash: Responsive images and cached remote images ([@11ty/eleventy-img](https://github.com/11ty/eleventy-img))
+- :package: SVG icon sprite generation
+- :robot: SEO metadata and Open Graph tags
+- :link: Safe external links (`noopener` and `noreferrer`)
+- :memo: Useful shortcodes and filters (date, markdown, sprite icons, responsive images...)
+- :shipit: Neat error overlay ([eleventy-plugin-error-overlay](https://github.com/stevenpetryk/eleventy-plugin-error-overlay))
+- :art: [Prettier](https://prettier.io/) for formatting
 
-✍️ A pre-configured [Netlify CMS](https://www.netlifycms.org/) setup  
-🎨 Customisable design tokens to make it your own  
-🌍 Customisable global data and navigation  
-📂 Tags and tag archives  
-✅ Progressively enhanced, semantic and accessible  
-🎈 _Super_ lightweight front-end  
-🚰 Sass powered CSS system with utility class generator  
-⚙️ Service worker that caches pages so people can read your articles offline  
-🚀 An RSS feed for your posts  
-💌 A basic contact form, ready for [Netlify Forms](https://docs.netlify.com/forms/setup/#html-forms)
+Live demo https://eleventy-webpack.netlify.app
 
-## Roadmap
+## Usage
 
-💬 [Netlify Forms](https://www.netlify.com/docs/form-handling/) powered comments  
-💡 ~~Dark/Light mode toggle~~ [Added in 0.4.0](https://github.com/hankchizljaw/hylia/releases/tag/0.4.0)  
-🗣 Webmentions  
-📖 Pagination  
-🐦 Web sharing API integration  
-🗒 Offline mode with links to cached pages  
-📄 Documentation site  
-💅 Proper Sass documentation  
-✍️ Proper CMS documentation  
-🖼 A facility for you to be able to add your logo / branding  
+First install the dependencies:
 
----
+```sh
+npm install
 
-## Getting started
+npn i bootstrap jquery popper.js
 
-### Method one: One-Click Deploy to Netlify
 
-You can [deploy Hylia to Netlify with one click][deploy-to-netlify] and you’ll be up and running in minutes!
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)][deploy-to-netlify]
-
-I recorded a quick start video of me deploying Hylia to Netlify and getting the CMS set up. [Check it out here](https://youtu.be/0hM_0BH-Y_A).
-
-### Method two: Clone / Fork
-
-1. Clone or fork this repo: `git clone https://github.com/hankchizljaw/hylia`
-2. `cd` into the project directory and run `npm install`
-3. Once all the dependencies are installed run `npm start`
-4. Open your browser at `http://localhost:8080` and away you go!
-
-## Terminal commands
-
-### Serve the site locally
-
-```bash
-npm start
 ```
 
-### Build a production version of the site
+Then you can:
 
-```bash
-npm run production
+| Command               | Description                                   |
+| --------------------- | --------------------------------------------- |
+| **`npm run start`**   | Run your website on http://localhost:8080     |
+| **`npm run build`**   | Build your production website inside `/_site` |
+| **`npm run format`**  | Run prettier on all filles except `/_site`    |
+| **`npm run analyze`** | Output info on your bundle size               |
+
+Make sure you use the correct node.js version:
+
+```sh
+# with bash nvm 
+nvm use `cat .nvmrc`
+# with windows nvm
+nvm use $(cat .nvmrc)
+# or just install the version specified inside `.nvmrc`
 ```
 
-### Compile Sass
+## Webpack
 
-```bash
-npm run sass:process
+A very simple `webpack.config.js` is included. Feel free to change it.
+
+## Shortcodes
+
+All shortcodes can be used inside `.md` or `.njk` files.
+
+<details>
+<summary><strong><code>icon</code></strong></summary>
+<br>
+
+Any SVG added to `src/assets/icons` is bundled into a symbol sprite file and made available through this shortcode.
+```html
+<!-- Assuming `src/assets/icons/github.svg` exist -->
+{% icon "github" %} Github icon
+<!-- Will be rendered as -->
+<svg class="icon icon--github" role="img" aria-hidden="true">
+  <use xlink:href="/assets/images/sprite.svg#github"></use>
+</svg>
 ```
+___
+</details>
 
-### Re-generate design tokens for Sass
+<details>
+<summary><strong><code>image</code></strong></summary>
+<br>
 
-```bash
-npm run sass:tokens
+Creates a WebP version of the image and the corresponding optimized JPEG / PNG. Images will be created in multiple sizes. See `utils/shortcodes.js` for default values.
+
+```html
+<!-- Assuming `src/assets/images/image.jpeg` of width 330px exist -->
+{% image "image.jpeg", "Image alt" %}
+<!-- Will be rendered as -->
+<picture>
+  <source type="image/webp" srcset="/assets/images/678868de-320.webp 320w, /assets/images/678868de.webp 330w" sizes="90vw">
+  <source type="image/png" srcset="/assets/images/678868de-320.png 320w, /assets/images/678868de.png 330w" sizes="90vw">
+  <img loading="lazy" src="/assets/images/678868de.png" alt="Image alt" width="330" height="580">
+</picture>
+
+<!-- If a title is passed the shortcode will output a <figure> with <figcaption> -->
+{% image "image.jpeg", "Image alt", "Image title" %}
+<!-- Will be rendered as -->
+<figure>
+  <picture>
+    <source type="image/webp" srcset="/assets/images/678868de-320.webp 320w, /assets/images/678868de.webp 330w" sizes="90vw">
+    <source type="image/png" srcset="/assets/images/678868de-320.png 320w, /assets/images/678868de.png 330w" sizes="90vw">
+    <img loading="lazy" src="/assets/images/678868de.png" alt="Image alt" width="330" height="580">
+  </picture>
+  <figcaption>Image title</figcaption>
+</figure>
+
+<!-- Additional options -->
+{% image [100,100], "image.jpeg", "Image alt", "Image title", "my-class", false, "90vw" %}
+<!-- Will be rendered as -->
+<figure class="fig-my-class">
+  <picture>
+    <source type="image/webp" srcset="..." sizes="90vw">
+    <source type="image/png" srcset="..." sizes="90vw">
+    <img class="img-my-class" loading="eager" src="..." alt="Image alt" width="100" height="100">
+  </picture>
+  <figcaption>Image title</figcaption>
+</figure>
 ```
+___
+</details>
 
-## Getting started with the CMS
+<details>
+<summary><strong><code>markdown</code></strong></summary>
+<br>
 
-Before you can use the CMS, you need to do some config in Netlify. Luckily they provide a [very handy guide to get started](https://www.netlify.com/docs/identity/).
+Embed markdown easily.
 
-In short, though:
-
-- Once you’ve set up the site on Netlify, go to “Settings” > “Identity” and enable Identity
-- Scroll down to the “Git Gateway” area, click “Enable Git Gateway” and follow the steps
-- Click the “Identity” tab at the top
-- Once you’ve enabled identity, click “Invite Users”
-- Check the invite link in your inbox and click the link in the email that’s sent to you
-- Set a password in the popup box
-- Go to `/admin` on your site and login
-- You’re in and ready to edit your content!
-
-## Design Tokens and Styleguide
-
-### Design Tokens
-
-Although Hylia has a pretty simple design, you can configure the core design tokens that control the colours, size ratio and fonts.
-
----
-
-**Note**: _Credit must be given to the hard work [Jina Anne](https://twitter.com/jina) did in order for the concept of design tokens to even exist. You should watch [this video](https://www.youtube.com/watch?v=wDBEc3dJJV8), then [read this article](https://the-pastry-box-project.net/jina-bolton/2015-march-28) and then sign up for [this course](https://aycl.uie.com/virtual_seminars/design_tokens_scaling_design_with_a_single_source_of_truth) to expand your knowledge._
-
----
-
-To change the design tokens in the CMS, find the “Globals” in the sidebar then in the presented options, select “Theme Settings”.
-
-To change the design tokens directly, edit [`_src/data/tokens.json`](https://github.com/hankchizljaw/hylia/blob/master/src/_data/tokens.json).
-
-The tokens are converted into maps that the Sass uses to compile the front-end CSS, so make sure that you maintain the correct structure of `tokens.json`.
-
-### Styleguide
-
-Your version of Hylia ships with a Styleguide by default. You can see a demo of the Styleguide at <https://hylia.website/styleguide/>.
-
-You can edit the Styleguide by opening [`src/styleguide.njk`](https://github.com/hankchizljaw/hylia/blob/master/src/styleguide.njk). If you don’t want the Styleguide, delete that file and the page will vanish.
-
-## Sass
-
-Hylia is based on the [WIP v2 version of Stalfos](https://github.com/hankchizljaw/stalfos/tree/feature/v2), which currently has no documentation (I know, I’m bad). Here is some very basic documentation for elements of the new framework that you will encounter on this project.
-
-### Configuration
-
-The whole Sass system is powered by central config file, which lives here: [`_src/scss/_config.scss`](https://github.com/hankchizljaw/hylia/blob/master/src/scss/_config.scss).
-
-Before Sass is compiled, a `_tokens.scss` file is generated from the [design tokens config](https://github.com/hankchizljaw/hylia/blob/master/src/_data/tokens.json) which is required.
-
-Key elements:
-
-- `$stalfos-size-scale`: A token driven size scale which by default, is a “Major Third” scale
-- `$stalfos-colors`: A token driven map of colours
-- `$stalfos-util-prefix`: All pre-built, framework utilities will have this prefix. Example: the wrapper utility is '.sf-wrapper' because the default prefix is 'sf-'
-- `$metrics`: Various misc metrics to use around the site
-- `$stalfos-config`: This powers everything from utility class generation to breakpoints to enabling/disabling pre-built components/utilities
-
-### How to create a new utility class with the generator
-
-The utility class generator lets you generate whatever you want, with no opinions on class name or properties affected.
-
-To add a new class, add another item to the exists `$stalfos-config` map. This example adds a utility for floating elements.
-
-```scss
-'float':('items':('left':'left','right': 'right'
-  ),
-  'output': 'responsive',
-  'property': 'float'
-);
+```html
+{% markdown %}
+Let's you use **Markdown** like _this_.
+Or with includes {%- include 'content.md' -%}.
+{% endmarkdown %}
 ```
+___
+</details>
 
-The `output` is set to `responsive` which means every breakpoint will generate a prefixed class for itself. If you only wanted elements to float left in the `md` breakpoint, you’d now be able to add a class of `md:float-left` to your HTML elements.
+## Filters
 
-If you only want standard utility classes generating, set the `output` to `standard`.
+All filters can be used inside `.md` or `.njk` files.
 
-### Functions
+<details>
+<summary><strong><code>format</code></strong></summary>
+<br>
 
-#### `get-color($key)`
+Format the passed date with [date-fns](https://date-fns.org/v2.16.1/docs/format):
 
-Function tries to match the passed `$key` with the `$stalfos-colors` map. Returns null if it can’t find a match.
+```html
+<!-- Assuming page.date is a javascript date -->
+{{ page.date | format("yyyy") }}
+<!-- Will be rendered as -->
+2020
+```
+___
+</details>
 
-#### `get-config-value($key, $group)`
+<details>
+<summary><strong><code>formatISO</code></strong></summary>
+<br>
 
-Returns back a 1 dimensional (key value pair) config value if available.
+Format the passed date according to [ISO format](https://date-fns.org/v2.16.1/docs/formatISO):
 
-#### `get-size($ratio-key)`
+```html
+<!-- Assuming page.date is a javascript date -->
+{{ page.date | formatISO }}
+<!-- Will be rendered as -->
+2020-09-18T19:00:52Z
+```
+___
+</details>
 
-Function tries to match the passed `$ratio-key` with the `$stalfos-size-scale`. Returns null if it can’t find a match.
+<details>
+<summary><strong><code>markdown</code></strong></summary>
+<br>
 
-### Mixins
+Parse the passed string with markdown:
 
-#### `apply-utility($key, $value-key)`
+```html
+<!-- Assuming page.title is `# My header` -->
+{{ page.title | markdown }}
+<!-- Will be rendered as -->
+<h1>My header</h1>
+```
+___
+</details>
 
-Grabs the property and value of one of the `$stalfos-config utilities` that the generator will generate a class for.
+## Thanks
 
-#### `media-query($key)`
-
-Pass in the key of one of your breakpoints set in `$stalfos-config['breakpoints']` and this mixin will generate the `@media` query with your configured value.
-
-## CMS
-
-Hylia has [Netlify CMS](https://www.netlifycms.org/) pre-configured as standard. You can customise the configuration by editing [`src/admin/config.yml`](https://github.com/hankchizljaw/hylia/blob/master/src/admin/config.yml).
-
-### Content that you can edit
-
-The basic CMS setup allows you to edit the following:
-
-- **Home page**: Edit the content on your homepage
-- **Posts**: Create and edit blog posts
-- **Generic pages**: Create generic pages that use a similar layout to posts
-- **Global site data**: Various bits of global site data such as your url, title, posts per page and author details
-- **Navigation**: Edit your primary navigation items
-- **Theme**: Edit the design tokens that power the site’s theme
-
-## Get involved
-
-This project is _super_ early and feedback is very much welcome. In order to keep things running smooth, please consult the [contribution guide and code of conduct](https://github.com/hankchizljaw/hylia/blob/master/contributing.md).
-
-The stuff that I need the most help with is:
-
-- Documentation
-- [Webmentions](https://www.w3.org/TR/webmention/)
-- Performance
-
-[deploy-to-netlify]: https://app.netlify.com/start/deploy?repository=https://github.com/hankchizljaw/hylia&stack=cms
+- https://github.com/gregives/twelvety
+- https://github.com/hankchizljaw/hylia
+- https://github.com/MadeByMike/supermaya
+- https://github.com/jeromecoupe/webstoemp
+- https://github.com/maxboeck/eleventastic
+- https://github.com/deviousdodo/elevenpack
+- https://github.com/ixartz/Eleventy-Starter-Boilerplate
+- https://github.com/google/eleventy-high-performance-blog
+- https://github.com/danurbanowicz/eleventy-netlify-boilerplate

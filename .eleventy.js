@@ -1,81 +1,80 @@
-const rssPlugin = require('@11ty/eleventy-plugin-rss');
-const syntaxHighlight = require('@11ty/eleventy-plugin-syntaxhighlight');
 const fs = require('fs');
+const path = require('path');
+const yaml = require('js-yaml');
+const NavigationPlugin = require('@11ty/eleventy-navigation');
+const ErrorOverlayPlugin = require('eleventy-plugin-error-overlay');
 
-// Import filters
-const dateFilter = require('./src/filters/date-filter.js');
-const markdownFilter = require('./src/filters/markdown-filter.js');
-const w3DateFilter = require('./src/filters/w3-date-filter.js');
+const filters = require('./utils/filters');
+const markdown = require('./utils/markdown');
+const shortcodes = require('./utils/shortcodes');
+const transforms = require('./utils/transforms');
 
-// Import transforms
-const htmlMinTransform = require('./src/transforms/html-min-transform.js');
-const parseTransform = require('./src/transforms/parse-transform.js');
+const pluginPWA = require("eleventy-plugin-pwa");
 
-// Import data files
-const site = require('./src/_data/site.json');
+module.exports = (config) => {
+  const manifestPath = path.resolve(__dirname, '_site/assets/manifest.json');
 
-module.exports = function(config) {
-  // Filters
-  config.addFilter('dateFilter', dateFilter);
-  config.addFilter('markdownFilter', markdownFilter);
-  config.addFilter('w3DateFilter', w3DateFilter);
+  // Allow for customizing the built in markdown parser.
+  config.setLibrary('md', markdown);
 
-  // Layout aliases
-  config.addLayoutAlias('home', 'layouts/home.njk');
-
-  // Transforms
-  config.addTransform('htmlmin', htmlMinTransform);
-  config.addTransform('parse', parseTransform);
-
-  // Passthrough copy
-  config.addPassthroughCopy('src/fonts');
-  config.addPassthroughCopy('src/images');
-  config.addPassthroughCopy('src/js');
-  config.addPassthroughCopy('src/admin/config.yml');
-  config.addPassthroughCopy('src/admin/previews.js');
-  config.addPassthroughCopy('node_modules/nunjucks/browser/nunjucks-slim.js');
-  config.addPassthroughCopy('src/robots.txt');
-
-  const now = new Date();
-
-  // Custom collections
-  const livePosts = post => post.date <= now && !post.data.draft;
-  config.addCollection('posts', collection => {
-    return [
-      ...collection.getFilteredByGlob('./src/posts/*.md').filter(livePosts)
-    ].reverse();
-  });
-
-  config.addCollection('postFeed', collection => {
-    return [...collection.getFilteredByGlob('./src/posts/*.md').filter(livePosts)]
-      .reverse()
-      .slice(0, site.maxPostsPerPage);
-  });
+  // Allow eleventy to understand yaml files
+  config.addDataExtension('yml', (contents) => yaml.safeLoad(contents));
 
   // Plugins
-  config.addPlugin(rssPlugin);
-  config.addPlugin(syntaxHighlight);
+  config.addPlugin(NavigationPlugin);
+  config.addPlugin(pluginPWA);
+  // Shows error name, message, and fancy stacktrace
+  config.addPlugin(ErrorOverlayPlugin);
 
-  // 404
+  // Filters
+  Object.keys(filters).forEach((key) => {
+    config.addFilter(key, filters[key]);
+  });
+
+  // Transforms
+  Object.keys(transforms).forEach((key) => {
+    config.addTransform(key, transforms[key]);
+  });
+
+  // Shortcodes
+  config.addShortcode('icon', shortcodes.icon);
+  config.addPairedShortcode('markdown', shortcodes.markdown);
+  config.addNunjucksAsyncShortcode('image', shortcodes.image);
+  config.addNunjucksAsyncShortcode('webpack', shortcodes.webpack);
+
+  // Pass-through files
+  config.addPassthroughCopy('src/_headers');
+  config.addPassthroughCopy('src/favicon.ico');
+  // Everything inside static is copied verbatim to `_site`
+  config.addPassthroughCopy('src/assets/static');
+
+  // BrowserSync Overrides
   config.setBrowserSyncConfig({
+    ...config.browserSyncConfig,
+    // Reload when manifest file changes
+    files: [manifestPath],
+    // Show 404 page on invalid urls
     callbacks: {
-      ready: function(err, browserSync) {
-        const content_404 = fs.readFileSync('dist/404.html');
-
+      ready: (err, browserSync) => {
         browserSync.addMiddleware('*', (req, res) => {
-          // Provides the 404 content without redirect.
-          res.write(content_404);
+          const fourOFour = fs.readFileSync('_site/404.html');
+          res.write(fourOFour);
           res.end();
         });
       }
-    }
+    },
+    // Speed/clean up build time
+    ui: false,
+    ghostMode: false
   });
 
   return {
-    dir: {
-      input: 'src',
-      output: 'dist'
-    },
-    passthroughFileCopy: true
+    dir: { input: 'src', output: '_site', includes: 'includes', data: 'data' },
+    // Allow nunjucks, markdown and 11ty files to be processed
+    templateFormats: ['njk', 'md', '11ty.js'],
+    htmlTemplateEngine: 'njk',
+    // Allow pre-processing `.md` files with nunjucks
+    // thus transforming the shortcodes
+    markdownTemplateEngine: 'njk'
   };
 };
