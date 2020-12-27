@@ -3,7 +3,9 @@
 {# Intro content #}
 {% set introHeading = title %}
 {% set introSummary %}
+{% include "partials/components/social.njk" %} 
   {{ content | safe }}
+  
 {% endset %}
 
 {# Post list content #}

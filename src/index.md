@@ -10,44 +10,19 @@ socialImage: 'https://res.cloudinary.com/maox17/image/upload/v1609021269/FornoMa
 
 {{metaDesc}}
 
-[Clicca qui per far partire il navigatore](https://goo.gl/maps/qn77CNgQ6coY45vw7)
+</br>
+
+</br>
 
 
-
-43.57410818847962, 11.140772943664468
 <a href="bingmaps:?cp=43.57410818847962~11.140772943664468">
  <a href="http://maps.apple.com/maps?q=43.57410818847962, 11.140772943664468"> 
-   Open Maps
+   Vieni a trovarci
  </a>
 </a>
 
-
-
-ok
-<a href="bingmaps:?cp=43.5741311~11.140712">
- <a href="http://maps.apple.com/maps?q=43.5741311, 11.140712"> 
-   Open Maps
- </a>
-</a>
 
 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2890.5553308786325!2d11.138565315495196!3d43.57414797912404!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x132a47c0c3952543%3A0xf8ce3b2fbea92df!2sL&#39;Antico%20Forno!5e0!3m2!1sit!2sit!4v1609023205811!5m2!1sit!2sit" width="600" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
 
 
-A post to demonstrate how a blog post looks on Hylia. Content is all set in the “Body” field as markdown and Eleventy transforms it into a proper HTML post. You can also edit the markdown file directly if you prefer not to use the CMS.
-
-If you want to make an image bleed-out, add a title attribute to it and the front-end will automatically wrap it in a `<figure>` tag for you.
-
-![The top of a grey concrete building with a blue sky in the background](/images/demo-image-1.jpg "Brutalism at its finest. Photo by Artificial Photography on Unsplash.")
-
-You can also add videos to posts from YouTube or Vimeo (or wherever, really) and the front-end will also make those bleed-out for you too.
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/_38JDGnr0vA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-Finally, how about a `<blockquote>`?
-
-> Quotes will take a slightly different style to normal body text and look fancy.
-
-![Person holds up a photograph of a riverside and buildings with the same river as a backdrop](/images/demo-image-2.jpg "Remember, if you want a figure and caption, add a 'title' attribute to image in the body field — Photo by Kharytonova Antonina on Unsplash.")
-
-Hopefully, this has demonstrated how simple it is to make a nice looking blog with Hylia.
-
+ 
